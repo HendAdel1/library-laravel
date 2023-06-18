@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+// use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::apiResource('users','App\Http\Controllers\API\UsersController');
+//register
+Route::post('create',[App\Http\Controllers\API\AuthController::class,'create']);
+//login
+Route::post('login',[App\Http\Controllers\API\AuthController::class,'login']);
+//update
+// Route::PUT(`/user/update/{$id}`,[App\Http\Controllers\API\UsersController::class,'update']);
