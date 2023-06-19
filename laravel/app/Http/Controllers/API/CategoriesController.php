@@ -13,11 +13,11 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $data = [];
+        $categoriesdata = [];
         $categories = Category::all();
         foreach ($categories as $category) {
             // $num_books = $category->books()->count();
-            $data[] = [
+            $categoriesdata[] = [
                 'name' => $category->name,
                 'description' => $category->description,
 
@@ -25,7 +25,7 @@ class CategoriesController extends Controller
             ];
         }
 
-        return response()->json($data);
+        return response()->json($categoriesdata);
 
     }
 
