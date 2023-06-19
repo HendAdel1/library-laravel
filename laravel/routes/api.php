@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CategoriesController;
+use App\Http\Controllers\AuthorController;
 // use App\Models\User;
 
 /*
@@ -33,3 +34,8 @@ Route::post('create',[App\Http\Controllers\API\AuthController::class,'create']);
 Route::post('login',[App\Http\Controllers\API\AuthController::class,'login']);
 //update
 // Route::PUT(`/user/update/{$id}`,[App\Http\Controllers\API\UsersController::class,'update']);
+Route::get('/authors', [AuthorController::class, 'index']);
+    Route::post('/authors', [AuthorController::class, 'store']);
+    Route::get('/authors/{id}', [AuthorController::class, 'show']);
+    Route::put('/authors/{id}', [AuthorController::class, 'update']);
+    Route::delete('/authors/{id}', [AuthorController::class, 'destroy']);
