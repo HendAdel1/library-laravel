@@ -39,7 +39,7 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $user=User::find($id);
-        if($user->role==2){
+        if(\Auth::user()->role==1){
             $user->email=$request->email;
             $user->name=$request->name;
             // $user->password=\Hash::make($request->password);
@@ -57,8 +57,16 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy( $id)
     {
-        //
+        $user=User::find($id);
+        if(auth::user()->role==1){
+            User::find($id)->delete();
+            return "user is deleted ";
+
+        }
+        else{
+            return 'sorry u cant delete';
+        }
     }
 }
