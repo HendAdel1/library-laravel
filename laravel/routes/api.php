@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CategoriesController;
+use App\Http\Controllers\API\UsersController;
 // use App\Models\User;
 
 /*
@@ -26,9 +27,17 @@ Route::post('/categories', [CategoriesController::class, 'store']);
 Route::put('/categories/{id}', [CategoriesController::class, 'update']);
 Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
 
-Route::apiResource('users','App\Http\Controllers\API\UsersController');
+Route::middleware(['admin-access'])->group(function () {
+    Route::put('/users/{id}', [UsersController::class, 'update']);
+
+
+});
+
+
+
+Route::apiResource('users','App\Http\Controllers\API\UsersController')->middleware('superAdmin-access');
 //register
-Route::post('create',[App\Http\Controllers\API\AuthController::class,'create']);
+Route::post('create',[App\Http\Controllers\API\AuthController::class,'create'])->middleware('superAdmin-access');
 //login
 Route::post('login',[App\Http\Controllers\API\AuthController::class,'login']);
 //update
