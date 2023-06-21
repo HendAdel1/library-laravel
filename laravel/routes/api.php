@@ -44,16 +44,3 @@ Route::get('/authors/{id}', [AuthorController::class, 'show']);
 Route::put('/authors/{id}', [AuthorController::class, 'update']);
 Route::delete('/authors/{id}', [AuthorController::class, 'destroy']);
 
-
-//----------------------------------Route group of the book---------------------------------
-Route::prefix('book')->controller(BookController::class)->group(function () {
-    Route::get('/', 'index')->name('book.index');
-
-    // Route::show('/{id}', 'show')->name('book.show');
-
-    Route::post('/', 'create')->name('book.create');
-
-    Route::put('/{id}', 'edit')->name('book.edit');
-
-    Route::delete('/{id}', 'delete')->name('book.delete');
-});
