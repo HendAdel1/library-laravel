@@ -23,6 +23,7 @@ use App\Http\Controllers\API\BookController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+//categories
 Route::get('/categories', [CategoriesController::class, 'index']);
 Route::get('/categories/{id}', [CategoriesController::class, 'show']);
 Route::post('/categories', [CategoriesController::class, 'store']);

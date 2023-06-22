@@ -36,7 +36,7 @@ class AuthorController extends Controller
     {
         //
         $author = Author::create($request->all());
-     return response()->json($author, 201);
+        return response()->json($author, 201);
     }
 
     /**
@@ -58,7 +58,7 @@ class AuthorController extends Controller
             return response()->json(['message' => 'Author not found.'], 404);
     }
         //
-        
+
     }
 
     /**
