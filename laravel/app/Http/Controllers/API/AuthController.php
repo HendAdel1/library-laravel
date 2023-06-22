@@ -62,14 +62,21 @@ class AuthController extends Controller
     //         'token'=>\Auth::user()->createToken('android')->plainTextToken
     //     ];
     // }
-    public function login(request $request){
+    public function login(LoginRequest $request){
         // $user =new User();
-       if(\Auth::attempt($request->only('email','password'))); 
-       
-        return [
+       if(\Auth::attempt($request->only('email','password'))){
+          return [
             'user'=>\Auth::user(),
             'token'=>\Auth::user()->createToken('android')->plainTextToken
         ];
+    }
+        else{
+            return "it's not a valiable";
+        }
+
+       }
+       
+      
     }
 
     //////
@@ -83,4 +90,4 @@ class AuthController extends Controller
             
     //     }
                 
-}
+

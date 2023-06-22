@@ -27,8 +27,14 @@ Route::post('/categories', [CategoriesController::class, 'store']);
 Route::put('/categories/{id}', [CategoriesController::class, 'update']);
 Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
 
-Route::middleware(['admin-access'])->group(function () {
-    Route::put('/users/{id}', [UsersController::class, 'update']);
+Route::middleware(['admin-access','superAdmin-access'])->group(function () {
+    // Route::put('/users/{id}', [UsersController::class, 'update']);
+    
+Route::get('/categories', [CategoriesController::class, 'index']);//viewer
+Route::get('/categories/{id}', [CategoriesController::class, 'show']);
+Route::post('/categories', [CategoriesController::class, 'store']);
+Route::put('/categories/{id}', [CategoriesController::class, 'update']);
+Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
 
 
 });

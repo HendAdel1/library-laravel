@@ -7,6 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use Illuminate\validation\Rule;
 
 class AuthRequest extends FormRequest
 {
@@ -27,6 +28,7 @@ class AuthRequest extends FormRequest
     {
         return [
             "email" =>'required|unique:users',
+            // "email" =>['required',Rule::unique('users', 'email')->whereNull('deleted_at')],
              'name'=>'required|max:25',
               "password"=>'required|max:20',
               "role"=>'required',
