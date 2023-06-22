@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreCategoriesRequest;
 
 class CategoriesController extends Controller
 {
@@ -16,12 +17,12 @@ class CategoriesController extends Controller
         $categoriesdata = [];
         $categories = Category::all();
         foreach ($categories as $category) {
-            // $num_books = $category->books()->count();
+            $num_books = $category->books()->count();
             $categoriesdata[] = [
                 'name' => $category->name,
                 'description' => $category->description,
 
-                // 'num_books' => $num_books
+                'num_books' => $num_books
             ];
         }
 
@@ -32,19 +33,24 @@ class CategoriesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategoriesRequest $request)
     {
-        $request->validate([
-            'name' => 'required|unique:categories|max:20',
-            'description' => 'required',
-        ]);
 
-        $category = Category::create([
-            'name' => $request->name,
-            'description' => $request->description,
-        ]);
 
-        return response()->json($category, 201);
+        $validateData = $request->validate([
+        ]);
+            $category = new Category;
+            $category->name = $request->name;
+            $category->description = $request->description;
+            $category->save();
+            $num_books = $category->books()->count();
+            return response()->json([
+                'name' => $category->name,
+                'description' => $category->description,
+                'num_books' => $num_books
+            ]);
+            // return response()->json($category, 201);
+
     }
 
     /**
@@ -63,12 +69,12 @@ class CategoriesController extends Controller
     {
         $category=Category::find($id);
         $category->fill($request->post())->save();
-        // $num_books = $category->books()->count();
+        $num_books = $category->books()->count();
         return response()->json(
             [
             'name' => $category->name,
             'description' => $category->description,
-            // 'num_books' => $num_books
+            'num_books' => $num_books
         ]);
     }
 
