@@ -14,8 +14,27 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::select('title', 'image', 'description', 'author_id')->get();
-        return $books;
+        $results = DB::table('books')
+            ->leftJoin('authors', 'authors.id', '=', 'books.author_id')
+            ->leftJoin('book_category', 'book_category.book_id', '=', 'books.id')
+            ->leftJoin('categories', 'book_category.category_id', '=', 'categories.id')
+            ->select('books.id', 'books.title', 'books.description', 'books.image', 'authors.name as authorname','books.created_at', DB::raw('GROUP_CONCAT(categories.name) as category'))
+            ->groupBy('books.id', 'books.title', 'books.description', 'books.image', 'authors.name','books.created_at')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'title'=> $item->title,
+                    'image' => $item->image,
+                    'desc' => $item->description,
+                    'author' => $item->authorname,
+                    'category' => explode(',', $item->category),
+                    'created_at' => $item->created_at
+                ];
+            })
+            ->toArray();
+
+        return $results;
     }
 
     /**
@@ -27,7 +46,7 @@ class BookController extends Controller
             'title' => 'required',
             'image' => 'required',
             'description' => 'required',
-            'author_id' => 'required'
+            'author_id' => 'required',
         ]);
 
         $book = Book::create($validatedData);
@@ -37,11 +56,107 @@ class BookController extends Controller
 
     /**
      * Display the specified resource.
-     */
-    public function show(string $id)
+     */ //search , filteration ,orderby in the same api
+    public function show(Request $request)
     {
-        return Book::findOrFail($id);
+        
+        $books = $this->index();
 
+        //search function
+        function search($request , $books){
+            $filtered = '';
+            if($request->title)
+            {
+                $filtered = array_filter($books,function($book){
+                    global $request;
+                    return $book['title'] === $request->title;
+                });
+            
+            }else{
+
+                $filtered = array_filter($books,function($book){
+                    global $request;
+                    return $book['author'] === $request->author;
+                });
+
+            }
+            return $filtered;
+        }
+        
+
+        //filteration function
+        function filterByCategory($books){
+            $filtered = '';
+            $filtered = array_filter($books,function($book){
+                
+                foreach($book['category']as $category){
+                    global $request;
+                    if($category == $request->category_filter){
+                        return $book;
+                    }
+                }
+            });
+            return $filtered;  
+        }
+
+
+        //orderby function
+        function orderBy($request,$books){
+            if($request['order_by'] == 'name')
+            {
+                usort($books, function($a, $b) {
+                    return $a['title'] > $b['title'];
+                });
+                
+            }else{
+
+                usort($books, function($a, $b) {
+                    return $a['created_at'] > $b['created_at'];
+                });
+
+            }
+            return $books;
+        }
+
+        if (($request->title or $request->author) and $request->order_by and $request->category_filter) {
+            $result = search($request,$books);
+            $result = filterByCategory($result);
+            $result = orderBy($request,$result);
+
+            return $result;
+               
+        } else if (($request->title or $request->author) and $request->order_by) {
+            $result = search($request,$books);
+            $result = orderBy($request,$result);
+
+            return $result;
+            
+        } else if (($request->title or $request->author) and $request->category_filter) {
+            $result = search($request,$books);
+            $result = filterByCategory($result);
+
+            return $result;
+
+        } else if ($request->order_by and $request->category_filter) {
+            $result = filterByCategory($books);
+            $result = orderBy($request,$result);
+
+            return $result;
+
+        } else if ($request->title or $request->author) {
+            
+            return search($request , $books);
+
+        } else if ($request->order_by) {
+
+            return orderBy($request,$books);
+            
+        } else if ($request->category_filter) {
+
+            return filterByCategory($books);
+
+        }
+   
     }
 
     /**

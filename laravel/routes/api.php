@@ -3,7 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CategoriesController;
-use App\Http\Controllers\AuthorController;
+// use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\API\AuthorController;
+use App\Http\Controllers\API\UsersController;
+// use App\Http\Controllers\AuthorController;
 // use App\Http\Controllers\BookController;
 // use App\Http\Controllers\API\AuthorController;
 use App\Http\Controllers\API\BookController;
@@ -30,9 +33,37 @@ Route::post('/categories', [CategoriesController::class, 'store']);
 Route::put('/categories/{id}', [CategoriesController::class, 'update']);
 Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
 
-Route::apiResource('books', BookController::class);
+Route::middleware(['admin-access','superAdmin-access'])->group(function () {
+    // Route::put('/users/{id}', [UsersController::class, 'update']);
+    
+Route::get('/categories', [CategoriesController::class, 'index']);//viewer
+Route::get('/categories/{id}', [CategoriesController::class, 'show']);
+Route::post('/categories', [CategoriesController::class, 'store']);
+Route::put('/categories/{id}', [CategoriesController::class, 'update']);
+Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
+
+
+});
+
+
+
+Route::apiResource('users','App\Http\Controllers\API\UsersController')->middleware('superAdmin-access');
+//register
+Route::post('create',[App\Http\Controllers\API\AuthController::class,'create'])->middleware('superAdmin-access');
 
 Route::apiResource('users','App\Http\Controllers\API\UsersController');
+
+// Route::apiResource(, )->middleware('superAdmin-access');
+
+Route::prefix('books')->controller(BookController::class)->group(function(){
+    Route::get('/','index');
+    Route::get('/show','show');
+    Route::middleware('superAdmin-access')->group(function(){
+        Route::post('/','store');
+        Route::put('/{id}','update');
+        Route::delete('/{id}','destroy');
+    });
+});
 //register
 Route::post('create', [App\Http\Controllers\API\AuthController::class, 'create']);
 //login
