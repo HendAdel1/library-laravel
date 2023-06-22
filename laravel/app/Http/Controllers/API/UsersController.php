@@ -14,8 +14,21 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
+        if(auth()->is_admin==2){
+            return "admin";
+        }
+        elseif(auth()->is_admin==1){
+            return "Super admin";
+        }
+        else{
+            return "user";
+        }
     }
+
+    // public function adminHome()
+    // {
+    //     if(auth)
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -39,7 +52,7 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $user=User::find($id);
-        if(\Auth::user()->role==1){
+        // if($user->role==1){
             $user->email=$request->email;
             $user->name=$request->name;
             // $user->password=\Hash::make($request->password);
@@ -47,10 +60,10 @@ class UsersController extends Controller
             $user->save();
             return $user;
 
-        }
-        else{
-            return 'sorry u cant update';
-        }
+        // }
+        // else{
+        //     return 'sorry u cant update';
+        // }
       
     }
 
@@ -60,13 +73,15 @@ class UsersController extends Controller
     public function destroy( $id)
     {
         $user=User::find($id);
-        if(auth::user()->role==1){
+        // if(auth::user()->role==1){
             User::find($id)->delete();
             return "user is deleted ";
 
-        }
-        else{
-            return 'sorry u cant delete';
-        }
+            
+
+       // }
+        // else{
+        //     return 'sorry u cant delete';
+        // }
     }
 }
