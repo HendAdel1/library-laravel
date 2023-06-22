@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CategoriesController;
-use App\Http\Controllers\AuthorController;
+// use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\API\AuthorController;
 use App\Http\Controllers\API\UsersController;
 // use App\Models\User;
 
