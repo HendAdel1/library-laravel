@@ -62,8 +62,8 @@ class AuthorController extends Controller
     $data = $request->validate([
         'name' => 'required|string|max:255',
         // 'email' => 'required|string|email|max:255|unique:authors,email',
-        "num_books"=>"required",
-    
+        // "num_books"=>"required",
+
     ]);
 
     $author = Author::create($data);
@@ -79,7 +79,7 @@ class AuthorController extends Controller
      */
     public function show( $id)
     {
-        $author = Authors::find($id);
+        $author = Author::find($id);
 
         if ($author) {
             $num_books = $author->books()->count();
@@ -101,7 +101,7 @@ class AuthorController extends Controller
      */
     public function update(StoreauthorsRequest $request, $id)
     {
-        $author = Authors::find($id);
+        $author = Author::find($id);
      if ($author) {
      $request->validate([
      'name' => 'required',
@@ -119,7 +119,7 @@ class AuthorController extends Controller
      */
     public function destroy( $id)
     {
-        $author = Authors::find($id);
+        $author = Author::find($id);
      if ($author) {
      $author->delete();
      return response()->json(null, 204);
