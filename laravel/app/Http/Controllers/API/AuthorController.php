@@ -20,24 +20,32 @@ class AuthorController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index()
+    // {
+
+    //     $authors = Authors::all();
+    //     $authdata = [];
+
+    //     foreach ($authors as $author) {
+    //         $num_books = $author->books()->count();
+    //         $authdata[] = [
+    //             'id' => $author->id,
+    //             'name' => $author->name,
+    //             'num_books' => $num_books
+    //         ];
+    //     }
+
+    //     return response()->json($authdata);
+    //     //
+    // }
     public function index()
-    {
+{
+    $authors = Author::all();
 
-        $authors = Authors::all();
-        $authdata = [];
-
-        foreach ($authors as $author) {
-            $num_books = $author->books()->count();
-            $authdata[] = [
-                'id' => $author->id,
-                'name' => $author->name,
-                'num_books' => $num_books
-            ];
-        }
-
-        return response()->json($authdata);
-        //
-    }
+    return response()->json([
+        'data' => $authors,
+    ]);
+}
 
     /**
      * Store a newly created resource in storage.
