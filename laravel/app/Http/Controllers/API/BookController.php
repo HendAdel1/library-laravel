@@ -45,12 +45,14 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         $validatedData = $request->validate([
             'title' => 'required',
             'image' => 'required',
             'description' => 'required',
             'author_id' => 'required',
             'category_id' => 'required'
+
 
         ]);
 
@@ -66,7 +68,7 @@ class BookController extends Controller
      */ //search , filteration ,orderby in the same api
     public function show(Request $request)
     {
-        
+
         $books = $this->index();
 
         //search function
@@ -78,7 +80,7 @@ class BookController extends Controller
                     global $request;
                     return $book['title'] === $request->title;
                 });
-            
+
             }else{
 
                 $filtered = array_filter($books,function($book){
@@ -89,13 +91,13 @@ class BookController extends Controller
             }
             return $filtered;
         }
-        
+
 
         //filteration function
         function filterByCategory($books){
             $filtered = '';
             $filtered = array_filter($books,function($book){
-                
+
                 foreach($book['category']as $category){
                     global $request;
                     if($category == $request->category_filter){
@@ -103,7 +105,7 @@ class BookController extends Controller
                     }
                 }
             });
-            return $filtered;  
+            return $filtered;
         }
 
 
@@ -114,7 +116,7 @@ class BookController extends Controller
                 usort($books, function($a, $b) {
                     return $a['title'] > $b['title'];
                 });
-                
+
             }else{
 
                 usort($books, function($a, $b) {
@@ -131,13 +133,13 @@ class BookController extends Controller
             $result = orderBy($request,$result);
 
             return $result;
-               
+
         } else if (($request->title or $request->author) and $request->order_by) {
             $result = search($request,$books);
             $result = orderBy($request,$result);
 
             return $result;
-            
+
         } else if (($request->title or $request->author) and $request->category_filter) {
             $result = search($request,$books);
             $result = filterByCategory($result);
@@ -151,19 +153,19 @@ class BookController extends Controller
             return $result;
 
         } else if ($request->title or $request->author) {
-            
+
             return search($request , $books);
 
         } else if ($request->order_by) {
 
             return orderBy($request,$books);
-            
+
         } else if ($request->category_filter) {
 
             return filterByCategory($books);
 
         }
-   
+
     }
 
     /**
