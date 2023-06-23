@@ -73,7 +73,7 @@ Route::apiResource('users','App\Http\Controllers\API\UsersController')->middlewa
 //register
 Route::post('create',[App\Http\Controllers\API\AuthController::class,'create'])->middleware('superAdmin-access');
 
-Route::apiResource('users','App\Http\Controllers\API\UsersController');
+// Route::apiResource('users','App\Http\Controllers\API\UsersController');
 
 // Route::apiResource(, )->middleware('superAdmin-access');
 
@@ -97,7 +97,7 @@ Route::prefix('books')->controller(BookController::class)->group(function(){
    
 });
 //register
-Route::post('create', [App\Http\Controllers\API\AuthController::class, 'create']);
+// Route::post('create', [App\Http\Controllers\API\AuthController::class, 'create']);
 //login
 Route::post('login', [App\Http\Controllers\API\AuthController::class, 'login']);
 //update
