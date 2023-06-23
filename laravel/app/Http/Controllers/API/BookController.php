@@ -12,26 +12,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BookController extends Controller
 {
+    use SoftDeletes;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $results = DB::table('books')
+        $results = Book::with(['author', 'categories'])
+            ->select('books.id', 'books.title', 'books.description', 'books.image', 'authors.name as authorname', 'books.created_at')
             ->leftJoin('authors', 'authors.id', '=', 'books.author_id')
             ->leftJoin('book_category', 'book_category.book_id', '=', 'books.id')
             ->leftJoin('categories', 'book_category.category_id', '=', 'categories.id')
-            ->select('books.id', 'books.title', 'books.description', 'books.image', 'authors.name as authorname','books.created_at', DB::raw('GROUP_CONCAT(categories.name) as category'))
-            ->groupBy('books.id', 'books.title', 'books.description', 'books.image', 'authors.name','books.created_at')
+            ->groupBy('books.id', 'books.title', 'books.description', 'books.image', 'authors.name', 'books.created_at')
             ->get()
             ->map(function ($item) {
                 return [
                     'id' => $item->id,
-                    'title'=> $item->title,
+                    'title' => $item->title,
                     'image' => $item->image,
                     'desc' => $item->description,
                     'author' => $item->authorname,
-                    'category' => explode(',', $item->category),
+                    'category' => $item->categories->pluck('name')->toArray(),
                     'created_at' => $item->created_at
                 ];
             })
