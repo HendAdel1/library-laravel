@@ -7,14 +7,14 @@ class AddDeletedAtToBooks extends Migration
     public function up()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
         });
     }
 
     public function down()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->dropColumn('deleted_at');
+            $table->dropSoftDeletes();
         });
     }
 }
