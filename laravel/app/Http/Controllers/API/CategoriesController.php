@@ -42,8 +42,11 @@ class CategoriesController extends Controller
             $category = new Category;
             $category->name = $request->name;
             $category->description = $request->description;
-            $category->save();
+            // $category->num_books = $request->num_books;
             $num_books = $category->books()->count();
+            // dd($num_books);
+            $category->save();
+            // dd($category);
             return response()->json([
                 'name' => $category->name,
                 'description' => $category->description,

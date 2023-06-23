@@ -26,12 +26,16 @@ use App\Http\Controllers\API\BookController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
 //categories
 Route::get('/categories', [CategoriesController::class, 'index']);
 Route::get('/categories/{id}', [CategoriesController::class, 'show']);
 Route::post('/categories', [CategoriesController::class, 'store']);
 Route::put('/categories/{id}', [CategoriesController::class, 'update']);
 Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
+
+
 
 Route::middleware(['admin-access','superAdmin-access'])->group(function () {
     // Route::put('/users/{id}', [UsersController::class, 'update']);
@@ -41,6 +45,15 @@ Route::get('/categories/{id}', [CategoriesController::class, 'show']);
 Route::post('/categories', [CategoriesController::class, 'store']);
 Route::put('/categories/{id}', [CategoriesController::class, 'update']);
 Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
+
+
+});
+
+Route::middleware('viewer-access')->group(function () {
+    
+Route::get('/categories', [CategoriesController::class, 'index']);//viewer
+Route::get('/categories/{id}', [CategoriesController::class, 'show']);
+
 
 
 });

@@ -4,7 +4,17 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreAuthorRequest;
+use App\Models\Author;
+// use App\Http\Requests\StoreAuthorRequest;
+use App\Http\Requests\StoreauthorsRequest;
+
+
+
+
+Use Illuminate\Support\Facades\Auth;
+// use App\Http\Requests\AuthRequest;
+// use App\Http\Requests\LoginRequest;
+
 class AuthorController extends Controller
 {
     /**
@@ -32,12 +42,29 @@ class AuthorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAuthorRequest $request)
-    {
-        //
-        $author = Author::create($request->all());
-        return response()->json($author, 201);
-    }
+    // public function store(StoreauthorsRequest $request)
+    // {
+    //     //
+    //     $author = Author::create($request->all());
+    //     return response()->json(["data"=>$author]
+    //     , 201);
+    // }
+    public function store(Request $request)
+{
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        // 'email' => 'required|string|email|max:255|unique:authors,email',
+        "num_books"=>"required",
+    
+    ]);
+
+    $author = Author::create($data);
+
+    return response()->json([
+        'message' => 'Author created successfully',
+        'data' => $author,
+    ], 201);
+}
 
     /**
      * Display the specified resource.
@@ -64,7 +91,7 @@ class AuthorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreAuthorRequest $request, $id)
+    public function update(StoreauthorsRequest $request, $id)
     {
         $author = Author::find($id);
      if ($author) {

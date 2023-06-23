@@ -27,7 +27,10 @@ class StoreauthorsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:20'  //
+            'name' => 'required|string|max:20'  ,
+            "id"=> "required",
+             "num_books"=>"required",
+                
         ];
     }
     protected function failedValidation(Validator $validator)
