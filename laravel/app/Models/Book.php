@@ -13,12 +13,13 @@ class Book extends Model
         'image',
         'description',
         'author_id',
-        'num_books'
+        'num_books',
+        'category_id'
     ];
 
     public function author()
     {
         return $this->belongsTo(Author::class);
     }
-    
+
 }
