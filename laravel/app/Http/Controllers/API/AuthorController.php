@@ -23,7 +23,7 @@ class AuthorController extends Controller
     public function index()
     {
 
-        $authors = Author::all();
+        $authors = Authors::all();
         $authdata = [];
 
         foreach ($authors as $author) {
@@ -71,7 +71,7 @@ class AuthorController extends Controller
      */
     public function show( $id)
     {
-        $author = Author::find($id);
+        $author = Authors::find($id);
 
         if ($author) {
             $num_books = $author->books()->count();
@@ -82,7 +82,7 @@ class AuthorController extends Controller
                 'num_books' => $num_books
             ]);
         } else {
-            return response()->json(['message' => 'Author not found.'], 404);
+            return response()->json(['message' => 'Author not found.'],404);
     }
         //
 
@@ -93,7 +93,7 @@ class AuthorController extends Controller
      */
     public function update(StoreauthorsRequest $request, $id)
     {
-        $author = Author::find($id);
+        $author = Authors::find($id);
      if ($author) {
      $request->validate([
      'name' => 'required',
@@ -101,7 +101,7 @@ class AuthorController extends Controller
      $author->update($request->all());
      return response()->json($author);
      } else {
-     return response()->json(['message' => 'Author not found.'], 404);
+     return response()->json(['message' => 'Author not found.'],404);
     }
         //
     }
@@ -111,12 +111,12 @@ class AuthorController extends Controller
      */
     public function destroy( $id)
     {
-        $author = Author::find($id);
+        $author = Authors::find($id);
      if ($author) {
      $author->delete();
      return response()->json(null, 204);
      } else {
-     return response()->json(['message' => 'Author not found.'], 404);
+     return response()->json(['message' => 'Author not found.'],404);
     }
         //
     }

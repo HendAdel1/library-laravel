@@ -21,13 +21,10 @@ class CategoriesController extends Controller
             $categoriesdata[] = [
                 'name' => $category->name,
                 'description' => $category->description,
-
                 'num_books' => $num_books
             ];
         }
-
         return response()->json($categoriesdata);
-
     }
 
     /**
@@ -68,11 +65,11 @@ class CategoriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $count)
     {
         $category=Category::find($id);
         $category->fill($request->post())->save();
-        $num_books = $category->books()->count();
+        $num_books = $count;
         return response()->json(
             [
             'name' => $category->name,
