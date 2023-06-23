@@ -75,6 +75,7 @@ Route::prefix('books')->controller(BookController::class)->group(function(){
         Route::post('/','store');
         Route::put('/{id}','update');
         Route::delete('/{id}','destroy');
+        Route::put('/restore/{id}', [BookController::class, 'restore']);
     });
 });
 //register

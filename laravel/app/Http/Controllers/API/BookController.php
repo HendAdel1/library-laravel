@@ -6,6 +6,9 @@ use App\Models\Book;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
 
 class BookController extends Controller
 {
@@ -47,9 +50,13 @@ class BookController extends Controller
             'image' => 'required',
             'description' => 'required',
             'author_id' => 'required',
+            'category_id' => 'required'
+
         ]);
 
         $book = Book::create($validatedData);
+
+        $book->categories()->attach($request->category_id);
 
         return $book;
     }
@@ -186,5 +193,15 @@ class BookController extends Controller
         $book->delete();
 
         return response()->json(['message' => 'Book deleted successfully']);
+    }
+
+    public function restore(string $id)
+    {
+
+        $book = Book::withTrashed()->findOrFail($id);
+        $book->restore();
+    
+        return response()->json(['message' => 'Book restored successfully']);
+
     }
 }
