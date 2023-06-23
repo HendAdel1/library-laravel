@@ -17,7 +17,7 @@ class AdminAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::guard('admin-api')->user()['role']==2|| Auth::guard('admin-api')->user()['role']==1){
+        if(Auth::guard('admin-api')->user()['role']==2 || Auth::guard('admin-api')->user()['role']==1){
             return $next($request);
         }
     return response()->json(['you do not have permission to access for this page']);

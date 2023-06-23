@@ -37,23 +37,32 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
-Route::middleware(['admin-access','superAdmin-access'])->group(function () {
-    // Route::put('/users/{id}', [UsersController::class, 'update']);
+// Route::middleware(['admin-access','superAdmin-access'])->group(function () {
+//     // Route::put('/users/{id}', [UsersController::class, 'update']);
 
-Route::get('/categories', [CategoriesController::class, 'index']);//viewer
-Route::get('/categories/{id}', [CategoriesController::class, 'show']);
-Route::post('/categories', [CategoriesController::class, 'store']);
-Route::put('/categories/{id}', [CategoriesController::class, 'update']);
-Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
+// Route::get('/categories', [CategoriesController::class, 'index']);//viewer
+// Route::get('/categories/{id}', [CategoriesController::class, 'show']);
+// Route::post('/categories', [CategoriesController::class, 'store']);
+// Route::put('/categories/{id}', [CategoriesController::class, 'update']);
+// Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
+
+// Route::get('/authors', [AuthorController::class, 'index']);
+// Route::post('/authors', [AuthorController::class, 'store']);
+// Route::get('/authors/{id}', [AuthorController::class, 'show']);
+// Route::put('/authors/{id}', [AuthorController::class, 'update']);
+// Route::delete('/authors/{id}', [AuthorController::class, 'destroy']);
 
 
-});
+
+// });
 
 Route::middleware('viewer-access')->group(function () {
     
 Route::get('/categories', [CategoriesController::class, 'index']);//viewer
 Route::get('/categories/{id}', [CategoriesController::class, 'show']);
 
+Route::get('/authors', [AuthorController::class, 'index']);
+Route::get('/authors/{id}', [AuthorController::class, 'show']);
 
 
 });
@@ -71,11 +80,20 @@ Route::apiResource('users','App\Http\Controllers\API\UsersController');
 Route::prefix('books')->controller(BookController::class)->group(function(){
     Route::get('/','index');
     Route::get('/show','show');
+    
     Route::middleware('superAdmin-access')->group(function(){
         Route::post('/','store');
         Route::put('/{id}','update');
         Route::delete('/{id}','destroy');
     });
+
+    Route::middleware('admin-access')->group(function(){
+        Route::post('/','store');
+        Route::put('/{id}','update');
+        Route::delete('/{id}','destroy');
+    });
+
+   
 });
 //register
 Route::post('create', [App\Http\Controllers\API\AuthController::class, 'create']);
@@ -83,9 +101,41 @@ Route::post('create', [App\Http\Controllers\API\AuthController::class, 'create']
 Route::post('login', [App\Http\Controllers\API\AuthController::class, 'login']);
 //update
 // Route::PUT(`/user/update/{$id}`,[App\Http\Controllers\API\UsersController::class,'update']);
+// Route::get('/authors', [AuthorController::class, 'index']);
+// Route::post('/authors', [AuthorController::class, 'store']);
+// Route::get('/authors/{id}', [AuthorController::class, 'show']);
+// Route::put('/authors/{id}', [AuthorController::class, 'update']);
+// Route::delete('/authors/{id}', [AuthorController::class, 'destroy']);
+
+
+
+Route::middleware('superAdmin-access')->group(function () {
+   Route::get('/categories', [CategoriesController::class, 'index']);//viewer
+Route::get('/categories/{id}', [CategoriesController::class, 'show']);
+Route::post('/categories', [CategoriesController::class, 'store']);
+Route::put('/categories/{id}', [CategoriesController::class, 'update']);
+Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
+
 Route::get('/authors', [AuthorController::class, 'index']);
 Route::post('/authors', [AuthorController::class, 'store']);
 Route::get('/authors/{id}', [AuthorController::class, 'show']);
 Route::put('/authors/{id}', [AuthorController::class, 'update']);
 Route::delete('/authors/{id}', [AuthorController::class, 'destroy']);
+});
+
+
+
+Route::middleware('admin-access')->group(function () {
+    Route::get('/categories', [CategoriesController::class, 'index']);//viewer
+    Route::get('/categories/{id}', [CategoriesController::class, 'show']);
+    Route::post('/categories', [CategoriesController::class, 'store']);
+    Route::put('/categories/{id}', [CategoriesController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoriesController::class, 'destroy']);
+    
+    Route::get('/authors', [AuthorController::class, 'index']);
+    Route::post('/authors', [AuthorController::class, 'store']);
+    Route::get('/authors/{id}', [AuthorController::class, 'show']);
+    Route::put('/authors/{id}', [AuthorController::class, 'update']);
+    Route::delete('/authors/{id}', [AuthorController::class, 'destroy']);
+});
 
