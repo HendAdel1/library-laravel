@@ -45,21 +45,29 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'required',
             'image' => 'required',
             'description' => 'required',
             'author_id' => 'required',
             'category_id' => 'required'
-
-
+        ], [
+            'title.required' => 'The title field is required.',
+            'image.required' => 'The image field is required.',
+            'description.required' => 'The description field is required.',
+            'author_id.required' => 'The author ID field is required.',
+            'category_id.required' => 'The category ID field is required.',
         ]);
-
-        $book = Book::create($validatedData);
-
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+    
+        $book = Book::create($request->all());
+    
+        // Add the book_id and category_id to the book_category table
         $book->categories()->attach($request->category_id);
-
+    
         return $book;
     }
 
