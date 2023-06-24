@@ -122,7 +122,8 @@ class AuthorController extends Controller
         $author = Author::find($id);
      if ($author) {
      $author->delete();
-     return response()->json(null, 204);
+    //  return response()->json(['message' => 'Author delete.'], 204);
+    return "user is deleted ";
      } else {
      return response()->json(['message' => 'Author not found.'],404);
     }

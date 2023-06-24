@@ -28,8 +28,6 @@ class StoreauthorsRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:20'  ,
-            "id"=> "required",
-             "num_books"=>"required",
                 
         ];
     }

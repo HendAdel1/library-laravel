@@ -26,6 +26,7 @@ class BookController extends Controller
             ->leftJoin('book_category', 'book_category.book_id', '=', 'books.id')
             ->leftJoin('categories', 'book_category.category_id', '=', 'categories.id')
             ->groupBy('books.id', 'books.title', 'books.description', 'books.image', 'authors.id', 'authors.name', 'books.created_at')
+
             ->get()
             ->map(function ($item) {
                 return [
@@ -142,7 +143,7 @@ class BookController extends Controller
 
         //orderby function
         function orderBy($request,$books){
-            if($request['order_by'] == 'name')
+            if($request['order_by'] == 'title')
             {
                 usort($books, function($a, $b) {
                     return $a['title'] > $b['title'];
