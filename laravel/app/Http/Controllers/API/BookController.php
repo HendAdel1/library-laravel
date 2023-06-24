@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Validator;
+
 
 
 
@@ -16,14 +18,14 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+   public function index()
     {
         $results = Book::with(['author', 'categories'])
-            ->select('books.id', 'books.title', 'books.description', 'books.image', 'authors.name as authorname', 'books.created_at')
+            ->select('books.id', 'books.title', 'books.description', 'books.image', 'authors.id as author_id', 'authors.name as authorname', 'books.created_at')
             ->leftJoin('authors', 'authors.id', '=', 'books.author_id')
             ->leftJoin('book_category', 'book_category.book_id', '=', 'books.id')
             ->leftJoin('categories', 'book_category.category_id', '=', 'categories.id')
-            ->groupBy('books.id', 'books.title', 'books.description', 'books.image', 'authors.name', 'books.created_at')
+            ->groupBy('books.id', 'books.title', 'books.description', 'books.image', 'authors.id', 'authors.name', 'books.created_at')
             ->get()
             ->map(function ($item) {
                 return [
@@ -31,7 +33,7 @@ class BookController extends Controller
                     'title' => $item->title,
                     'image' => $item->image,
                     'desc' => $item->description,
-                    'author' => $item->authorname,
+                    'author' => ['author_id'=>$item->author_id,'author_name'=>$item->authorname],
                     'category' => $item->categories->pluck('name')->toArray(),
                     'created_at' => $item->created_at
                 ];
@@ -46,6 +48,19 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'image' => 'required',
+            'description' => 'required',
+            'author_id' => 'required',
+            'category_id' => 'required'
+        ]);
+    
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            return response()->json(['errors' => $errors], 422);
+        }
+
         // dd($request);
         $validatedData = $request->validate([
             'title' => 'required',
@@ -53,10 +68,16 @@ class BookController extends Controller
             'description' => 'required',
             'author_id' => 'required',
             'category_id' => 'required'
-
-
         ]);
 
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
+            $validatedData['image'] = $imageName;
+        }
+    
         $book = Book::create($validatedData);
 
         $book->categories()->attach($request->category_id);
@@ -69,6 +90,15 @@ class BookController extends Controller
      */ //search , filteration ,orderby in the same api
     public function show(Request $request)
     {
+        $title = $request->input('title');
+        $author = $request->input('author');
+        $categoryFilter = $request->input('category_filter');
+        $orderBy = $request->input('order_by');
+
+        // Check for required parameters
+        if (empty($title) && empty($author) && empty($categoryFilter) && empty($orderBy)) {
+            return response()->json(['error' => 'At least one parameter is required.'], 422);
+        }
 
         $books = $this->index();
 
@@ -176,10 +206,13 @@ class BookController extends Controller
     {
         $validatedData = $request->validate([
             'title' => 'string',
-            'image' => 'string',
             'description' => 'string',
             'author_id' => 'exists:authors,id'
         ]);
+
+        if (empty($validatedData)) {
+            return response()->json(['error' => 'No fields provided for update'], 400);
+        }
 
         $book = Book::findOrFail($id);
         $book->update($validatedData);
@@ -192,7 +225,13 @@ class BookController extends Controller
      */
     public function destroy(string $id)
     {
-        $book = Book::findOrFail($id);
+        
+        $book = Book::find($id);
+    
+        if (!$book) {
+            return response()->json(['error' => 'Book not found'], 404);
+        }
+        
         $book->delete();
 
         return response()->json(['message' => 'Book deleted successfully']);
@@ -201,7 +240,12 @@ class BookController extends Controller
     public function restore(string $id)
     {
 
-        $book = Book::withTrashed()->findOrFail($id);
+        $book = Book::withTrashed()->find($id);
+    
+        if (!$book) {
+            return response()->json(['error' => 'Book not found'], 404);
+        }
+
         $book->restore();
     
         return response()->json(['message' => 'Book restored successfully']);
